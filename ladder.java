@@ -1,79 +1,109 @@
 package ladder;
 
-import java.util.Scanner;
+public class Ladder {
 
-public class ladder {
-    public static void main(String[] args) {
-        int[][] ladder = {
-                {0, 1, 0, 1},
-                {1, 0, 1, 0},
-                {0, 1, 0, 1},
-                {1, 0, 0, 1},
-                {1, 0, 1, 0},
-                {0, 1, 0, 1},
-                {1, 0, 1, 0},
-                {0, 1, 0, 1},
-                {1, 0, 1, 0},
-                {0, 1, 0, 1}
-        };
+    private int row;
+    private int leg;
+    private int[][] arr;
 
-        ladderDraw(ladder); /* 사다리 그리기 */
-
-        Scanner kb = new Scanner(System.in);
-        String[] chair = chair(ladder[0].length, kb); /* 자리결정 */
-        System.out.println();
-
-        String[] result = result(ladder[0].length, kb); /* 행운결정 */
-        System.out.println();
-
-        System.out.println("------ 행운의 결과 ------");
-        for (int i = 0 ; i < ladder[0].length+1 ; i++){
-            int x = ladderLogic(i, ladder);             /* 사다리 로직 */
-            System.out.println(chair[i] + " >> " + result[x]);
-        }
+    public Ladder() {
     }
 
-    public static void ladderDraw(int[][] array) {
-        System.out.println("------행운의 사다리------");
-        System.out.println("1     2     3     4     5");
-        for (int i = 0; i < array.length ; i++){
-            for (int j = 0; j < array[0].length ; j++){
-                String bar;
-                bar =  (array[i][j] == 1)? "-----" : "     ";
-                System.out.print("|" + bar + ((j==3)? "|\n" : ""));
+    public Ladder(int row, int leg) {
+        this.row = row;
+        this.leg = leg;
+        this.arr = new int[row+2][leg+1];
+    }
+
+    public int[][] getArr(int a, int b) {
+        return arr;
+    }
+
+    public void setArr(int[][] arr) {
+        this.arr = arr;
+    }
+
+    public int getrow() {
+        return row;
+    }
+
+    public void setrow(int row) {
+        this.row = row;
+    }
+
+    public int getLeg() {
+        return leg;
+    }
+
+    public void setLeg(int leg) {
+        this.leg = leg;
+    }
+
+    // 사다리 랜덤생성
+    public void ladderMake(){
+        for (int i=1 ; i<arr[0].length-1 ; i++){
+            for (int j=0 ; j<3 ; j++){
+                int bar = 3*j + (int)(Math.random()*3) + 1;
+                if (arr[bar][i] > 0){
+                    j--;
+                    continue;
+                } else {
+                    arr[bar][i] = 1;
+                    arr[bar][i+1] = 2 ;
+                }
             }
         }
-        System.out.println("A     B     C     D     E\n");
     }
 
-    public static int ladderLogic(int x, int[][] array) { /* 사다리로직 */
-        for (int y = 0; y < array.length ; y++){
-            if (x > 0 && array[y][x-1] == 1) x--;                  /* left check */
-            else if (x < array[0].length && array[y][x] == 1) x++; /* right check */
-            System.out.println("("+y+", "+x+")");
+    // 사다리 그리기
+    public void ladderDraw(){
+        String str = "";
+        for (int k=1 ; k<arr[0].length ; k++){
+            str = str + k + ((k<arr[0].length)? "     ":"");
         }
-        return x;
+        System.out.println(str);
+        for (int i=0 ; i<arr.length ; i++ ){
+            for (int j=1 ; j<arr[0].length ; j++){
+                if(arr[i][j] == 1) {
+                    System.out.print("|-----");
+                } else if(arr[i][j] == 10) {
+                    System.out.print("║     ");
+                    arr[i][j] = 0;
+                } else if(arr[i][j] == 11) {
+                    System.out.print("║═════");
+                    arr[i][j] = 1;
+                } else if(arr[i][j] == 12) {
+                    System.out.print("║     ");
+                    arr[i][j] = 2;
+                } else {
+                    System.out.print("|     ");
+                }
+            }
+            System.out.println();
+        }
+        str = "";
+        for (int k=0 ; k<arr[0].length-1 ; k++){
+            str = str + (char)('A' + k ) + ((k<arr[0].length-1)? "     ":"");
+        }
+        System.out.println(str+"\n");
     }
 
-    public static String[] chair(int x, Scanner kb) {  /* 자리결정 */
-        System.out.println("------ 자리 결정 ------");
-        String[] chair = new String[x+1];
-        for (int i = 0; i < x+1 ; i++){
-            System.out.print(i+1+"번 자리 : ");
-            chair[i] = kb.nextLine();
-            if (chair[i].equals("")) chair[i] = i+1+"";
+    // 경로 계산
+    public int luck(int index) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i][index] == 0) arr[i][index] = 10;
+            if (arr[i][index] == 1 || arr[i][index] == 2) {
+                if (arr[i][index - 1] == 1 && arr[i][index] == 2) {
+                    arr[i][index-1] = 11;
+                    arr[i][index] = 12;
+                    index--;
+                } else {
+                    arr[i][index] = 11;
+                    arr[i][index+1] = 12;
+                    index++;
+                }
+            }
         }
-        return chair;
-    }
-
-    public static String[] result(int x, Scanner kb) {  /* 행운결정 */
-        System.out.println("------ 행운 결정 ------");
-        String[] result = new String[x+1];
-        for (int i = 0; i < x+1 ; i++){
-            System.out.print((char)('A'+i)+"번 결과 : ");
-            result[i] = kb.nextLine();
-            if (result[i].equals("")) result[i] = "꽝~";
-        }
-        return result;
+        return index;
     }
 }
