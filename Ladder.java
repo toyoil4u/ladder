@@ -15,12 +15,12 @@ public class Ladder {
         this.arr = new int[row+2][leg+1];
     }
 
-    public int[][] getArr(int a, int b) {
-        return arr;
+    public int getArr(int a, int b) {
+        return arr[a][b];
     }
 
-    public void setArr(int[][] arr) {
-        this.arr = arr;
+    public void setArr(int a, int b, int val) {
+        this.arr[a][b] = val;
     }
 
     public int getrow() {
@@ -106,9 +106,4 @@ public class Ladder {
         }
         return index;
     }
-<<<<<<< .mine
-
-=======
-
->>>>>>> .theirs
 }
