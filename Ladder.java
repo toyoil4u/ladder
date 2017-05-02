@@ -106,5 +106,9 @@ public class Ladder {
         }
         return index;
     }
+<<<<<<< .mine
 
+=======
+
+>>>>>>> .theirs
 }
